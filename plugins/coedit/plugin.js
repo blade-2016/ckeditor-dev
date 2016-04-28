@@ -88,6 +88,7 @@ CKEDITOR.plugins.add( 'coedit', {
 		var children = body.childNodes;
 		var node,i,paraData;
 		var preParaId = "__beginning__";
+		var usedIds = {};
 
 		var oldData = this.data || {
 			"__beginning__":{nextParaId:"__ending__",content:""},
@@ -102,7 +103,8 @@ CKEDITOR.plugins.add( 'coedit', {
 		for(var i = 0; i < children.length; i++){
 			node = children[i];
 			if(node.nodeType == 1){
-				paraData = this._buildParaData(node);
+				paraData = this._buildParaData(node,usedIds);
+				usedIds[paraData.paraId] = 1;
 				data[preParaId].nextParaId = paraData.paraId;
 				data[paraData.paraId] = paraData;
 				preParaId = paraData.paraId;
@@ -111,8 +113,22 @@ CKEDITOR.plugins.add( 'coedit', {
 		this.data = data;
 	},
 
-	_buildParaData: function(node){
+	_buildParaData: function(node,usedIds){
 		var paraData = {};
+		
+		var subNodes = node.querySelectorAll("*[ce-para-id]");
+		var subNode,subId;
+
+		for(var i=0;i<subNodes.length;i++){
+			subNode = subNodes[i];
+			if(i==0){
+				subId = subNode.getAttribute("ce-para-id");
+			}
+
+			subNode.removeAttribute("ce-doc-id");
+			subNode.removeAttribute("ce-para-id");
+			subNode.removeAttribute("id");
+		}
 
 		var docId = node.getAttribute("ce-doc-id");
 		if(docId && docId != this.docId){
@@ -125,7 +141,17 @@ CKEDITOR.plugins.add( 'coedit', {
 		if(!node.id){
 			paraId = null;
 		}
-		paraData.paraId = paraId || this._getRdId();
+
+		if(paraId && usedIds[paraId] == 1){
+			paraId = null;
+			node.removeAttribute("ce-doc-id");
+			node.removeAttribute("ce-para-id");
+			node.removeAttribute("id");
+		}
+
+
+
+		paraData.paraId = paraId || subId || this._getRdId();
 
 		node.setAttribute("ce-doc-id",paraData.docId);
 		node.setAttribute("ce-para-id",paraData.paraId);
@@ -159,7 +185,6 @@ CKEDITOR.plugins.add( 'coedit', {
 		// }
 		// var n = newData || arr[arr.length-1];
 		// var o = oldData || arr[arr.length-2];
-
 		var n = newData;
 		var o = oldData;
 
