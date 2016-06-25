@@ -406,9 +406,16 @@
 
 		var contentBlock, listItem;
 
+		var checkbox;
+
 		while ( listContents.length ) {
 			contentBlock = listContents.shift();
 			listItem = doc.createElement( 'li' );
+			checkbox = doc.createElement('input');
+			checkbox.setAttribute("type","checkbox");
+			checkbox.setAttribute("data-cke-chkli","1");
+			checkbox.appendTo(listItem);
+
 
 			// If current block should be preserved, append it to list item instead of
 			// transforming it to <li> element.
@@ -439,6 +446,17 @@
 	}
 
 	function removeList( editor, groupObj, database ) {
+		
+		var content,ipts,j,k,ipt;
+
+		for(j=0;j<groupObj.contents.length;j++){
+			content = groupObj.contents[j].$;
+			ipts = content.querySelectorAll("input[data-cke-chkli]");
+			for(k=0;k<ipts.length;k++){
+				ipt = ipts[k];
+				ipt.parentNode.removeChild(ipt);
+			}
+		}
 		// This is very much like the change list type operation.
 		// Except that we're changing the selected items' indent to -1 in the list array.
 		var listArray = CKEDITOR.plugins.list.listToArray( groupObj.root, database ),
@@ -675,10 +693,12 @@
 
 			// 1. Only a single type of list activate.
 			// 2. Do not show list outside of block limit.
-			if ( list && limit.contains( list ) )
+			if ( list && limit.contains( list ) ){
 				this.setState( list.is( this.type ) ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF );
-			else
+			}
+			else{
 				this.setState( CKEDITOR.TRISTATE_OFF );
+			}
 		}
 	};
 
@@ -845,7 +865,6 @@
 				// Use getKey directly in order to ignore modifiers.
 				// Justification: http://dev.ckeditor.com/ticket/11861#comment:13
 				var key = evt.data.domEvent.getKey(), li;
-
 				// DEl/BACKSPACE
 				if ( editor.mode == 'wysiwyg' && key in { 8: 1, 46: 1 } ) {
 					var sel = editor.getSelection(),

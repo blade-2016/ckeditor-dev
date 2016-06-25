@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>CheckList Test</title>
+		<script src="../../../ckeditor.js"></script>
+	</head>
+	<body>
+<!-- 		<p>Enter mode P:</p> -->
+<div id="editor">
+	<p>p1</p>
+	<p>p2</p>
+	<p>p3</p>
+	<p>p4</p>
+	<ul>
+		<li>
+			<a href="#foo">ul1</a>
+			<ol>
+				<li><em>ulol1</em></li>
+			</ol>
+		</li>
+		<li><p><u>ul2</u></p></li>
+		<li><a href="#bar">ul3</a></li>
+	</ul>
+	<p><strong>ps1</strong></p>
+	<p><strong>ps2</strong></p>
+	<p><strong>ps3</strong></p>
+	<ul>
+		<li>
+			<a href="#foo">zzul1</a>
+			<ol>
+				<li><em>zzulol1</em></li>
+			</ol>
+		</li>
+		<li><p><u>zzul2</u></p></li>
+		<li><a href="#bar">zzul3</a></li>
+	</ul>
+</div>
+
+<!-- <p>Enter mode BR:</p>
+<div id="editor2">
+	foo
+	<ul>
+		<li>
+			<a href="#foo">foo</a>
+			<ol>
+				<li><em>foo</em></li>
+			</ol>
+		</li>
+		<li><u>bar</u></li>
+		<li><a href="#bar">bar</a></li>
+	</ul>
+	<strong>bar</strong>
+</div>
+ -->
+<script>
+	CKEDITOR.replace( 'editor', { height: 200 } );
+	// CKEDITOR.replace( 'editor2', {
+	// 	height: 200,
+	// 	enterMode: CKEDITOR.ENTER_BR
+	// } );
+</script>
+		</script>
+	</body>
+</html>
