@@ -8,7 +8,7 @@
  */
 
 ( function() {
-	var listNodeNames = { ol: 1, ul: 1 };
+	var listNodeNames = { ol: 1, ul: 1, cl:1 };
 
 	var whitespaces = CKEDITOR.dom.walker.whitespaces(),
 		bookmarks = CKEDITOR.dom.walker.bookmark(),
@@ -330,6 +330,37 @@
 		}
 
 		var newList = CKEDITOR.plugins.list.arrayToList( listArray, database, null, editor.config.enterMode );
+		var __df = newList.listNode.$;
+		var __doc = newList.listNode.getDocument().$;
+		var __lis,__insertAnchor,__i,__li,__chk;
+		if(this.type == "cl"){
+			__lis = __df.querySelectorAll("cl>li");
+			for(__i=0;__i<__lis.length;__i++){
+				__li = __lis[__i];
+				if(__li.firstElementChild && __li.firstElementChild.getAttribute("data-cke-chkli")=="1"){
+					
+				}else{
+					__insertAnchor = __li.firstChild;
+					__chk = __doc.createElement('input');
+					__chk.setAttribute("type","checkbox");
+					__chk.setAttribute("data-cke-chkli","1");
+					if(__insertAnchor){
+						__li.insertBefore(__chk,__insertAnchor);
+					}else{
+						__li.appendChild(__chk);
+					}
+				}
+			}
+		}else{
+			__lis = __df.querySelectorAll("ul>li,ol>li");
+			for(__i=0;__i<__lis.length;__i++){
+				__li = __lis[__i];
+				if(__li.firstChild && __li.firstChild.nodeType==1 && __li.firstChild.getAttribute("data-cke-chkli")=="1"){
+					__li.removeChild(__li.firstChild);
+				}
+			}
+		}
+		console.log(this.type)
 		var child,
 			length = newList.listNode.getChildCount();
 		for ( i = 0; i < length && ( child = newList.listNode.getChild( i ) ); i++ ) {
@@ -448,7 +479,6 @@
 	}
 
 	function removeList( editor, groupObj, database ) {
-		
 		var content,ipts,j,k,ipt;
 
 		for(j=0;j<groupObj.contents.length;j++){
@@ -558,8 +588,6 @@
 
 	listCommand.prototype = {
 		exec: function( editor ) {
-			debugger;
-
 			// Run state check first of all.
 			this.refresh( editor, editor.elementPath() );
 
@@ -697,22 +725,7 @@
 			// 1. Only a single type of list activate.
 			// 2. Do not show list outside of block limit.
 			if ( list && limit.contains( list ) ){
-				if(this.name == 'numberedlist'){
-					this.setState( list.is( this.type ) ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF );
-				}else{
-					// this.name(chklist bulllist);list input(ul ol) 
-					if(list.is(this.type)){
-						var ipt = list.getFirst() && list.getFirst().getFirst();
-						if(ipt && ipt.is("input") && ipt.getAttribute("data-cke-chkli")){
-							this.setState(this.name == "checkedlist"?CKEDITOR.TRISTATE_ON:CKEDITOR.TRISTATE_OFF)
-						}else{
-							this.setState(this.name == "checkedlist"?CKEDITOR.TRISTATE_OFF:CKEDITOR.TRISTATE_ON)
-						}
-					} else{
-						this.setState(CKEDITOR.TRISTATE_OFF);
-					}
-				}
-				
+				this.setState( list.is( this.type ) ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF );
 			}
 			else{
 				this.setState( CKEDITOR.TRISTATE_OFF );
@@ -861,7 +874,7 @@
 			// Register commands.
 			editor.addCommand( 'numberedlist', new listCommand( 'numberedlist', 'ol' ) );
 			editor.addCommand( 'bulletedlist', new listCommand( 'bulletedlist', 'ul' ) );
-			editor.addCommand( 'checkedlist', new listCommand( 'checkedlist', 'ul' ) );
+			editor.addCommand( 'checkedlist', new listCommand( 'checkedlist', 'cl' ) );
 
 			// Register the toolbar button.
 			if ( editor.ui.addButton ) {

@@ -133,3 +133,17 @@ a > img {
 	border: none;
 	outline: 1px solid #0782C1;
 }
+
+
+
+
+cl{
+	display: block;
+    list-style-type: none;
+    padding: 0 40px 0 21px;
+    -webkit-margin-before: 1em;
+    -webkit-margin-after: 1em;
+    -webkit-margin-start: 0px;
+    -webkit-margin-end: 0px;
+}
+cl li>input
