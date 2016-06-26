@@ -411,11 +411,13 @@
 		while ( listContents.length ) {
 			contentBlock = listContents.shift();
 			listItem = doc.createElement( 'li' );
-			checkbox = doc.createElement('input');
-			checkbox.setAttribute("type","checkbox");
-			checkbox.setAttribute("data-cke-chkli","1");
-			checkbox.appendTo(listItem);
-
+			if(this.name=="checkedlist"){
+				checkbox = doc.createElement('input');
+				checkbox.setAttribute("type","checkbox");
+				checkbox.setAttribute("data-cke-chkli","1");
+				checkbox.appendTo(listItem);
+			}
+			
 
 			// If current block should be preserved, append it to list item instead of
 			// transforming it to <li> element.
@@ -556,6 +558,7 @@
 
 	listCommand.prototype = {
 		exec: function( editor ) {
+			debugger;
 
 			// Run state check first of all.
 			this.refresh( editor, editor.elementPath() );
@@ -688,14 +691,28 @@
 		},
 
 		refresh: function( editor, path ) {
-			console.log(this.name)
 			var list = path.contains( listNodeNames, 1 ),
 				limit = path.blockLimit || path.root;
 
 			// 1. Only a single type of list activate.
 			// 2. Do not show list outside of block limit.
 			if ( list && limit.contains( list ) ){
-				this.setState( list.is( this.type ) ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF );
+				if(this.name == 'numberedlist'){
+					this.setState( list.is( this.type ) ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF );
+				}else{
+					// this.name(chklist bulllist);list input(ul ol) 
+					if(list.is(this.type)){
+						var ipt = list.getFirst() && list.getFirst().getFirst();
+						if(ipt && ipt.is("input") && ipt.getAttribute("data-cke-chkli")){
+							this.setState(this.name == "checkedlist"?CKEDITOR.TRISTATE_ON:CKEDITOR.TRISTATE_OFF)
+						}else{
+							this.setState(this.name == "checkedlist"?CKEDITOR.TRISTATE_OFF:CKEDITOR.TRISTATE_ON)
+						}
+					} else{
+						this.setState(CKEDITOR.TRISTATE_OFF);
+					}
+				}
+				
 			}
 			else{
 				this.setState( CKEDITOR.TRISTATE_OFF );
