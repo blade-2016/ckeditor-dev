@@ -556,6 +556,7 @@
 
 	listCommand.prototype = {
 		exec: function( editor ) {
+
 			// Run state check first of all.
 			this.refresh( editor, editor.elementPath() );
 
@@ -607,7 +608,6 @@
 					block;
 
 				iterator.forceBrBreak = ( this.state == CKEDITOR.TRISTATE_OFF );
-
 				while ( ( block = iterator.getNextParagraph() ) ) {
 					// Avoid duplicate blocks get processed across ranges.
 					if ( block.getCustomData( 'list_block' ) )
@@ -688,6 +688,7 @@
 		},
 
 		refresh: function( editor, path ) {
+			console.log(this.name)
 			var list = path.contains( listNodeNames, 1 ),
 				limit = path.blockLimit || path.root;
 
@@ -833,7 +834,7 @@
 		// jscs:disable maximumLineLength
 		lang: 'af,ar,bg,bn,bs,ca,cs,cy,da,de,de-ch,el,en,en-au,en-ca,en-gb,eo,es,et,eu,fa,fi,fo,fr,fr-ca,gl,gu,he,hi,hr,hu,id,is,it,ja,ka,km,ko,ku,lt,lv,mk,mn,ms,nb,nl,no,pl,pt,pt-br,ro,ru,si,sk,sl,sq,sr,sr-latn,sv,th,tr,tt,ug,uk,vi,zh,zh-cn', // %REMOVE_LINE_CORE%
 		// jscs:enable maximumLineLength
-		icons: 'bulletedlist,bulletedlist-rtl,numberedlist,numberedlist-rtl', // %REMOVE_LINE_CORE%
+		icons: 'bulletedlist,bulletedlist-rtl,numberedlist,numberedlist-rtl,checkedlist,checkedlist-rtl', // %REMOVE_LINE_CORE%
 		hidpi: true, // %REMOVE_LINE_CORE%
 		requires: 'indentlist',
 		init: function( editor ) {
@@ -843,6 +844,7 @@
 			// Register commands.
 			editor.addCommand( 'numberedlist', new listCommand( 'numberedlist', 'ol' ) );
 			editor.addCommand( 'bulletedlist', new listCommand( 'bulletedlist', 'ul' ) );
+			editor.addCommand( 'checkedlist', new listCommand( 'checkedlist', 'ul' ) );
 
 			// Register the toolbar button.
 			if ( editor.ui.addButton ) {
@@ -857,6 +859,12 @@
 					command: 'bulletedlist',
 					directional: true,
 					toolbar: 'list,20'
+				} );
+				editor.ui.addButton( 'CheckedList', {
+					label: 'CheckedList',
+					command: 'checkedlist',
+					directional: true,
+					toolbar: 'list,21'
 				} );
 			}
 
