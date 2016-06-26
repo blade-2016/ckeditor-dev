@@ -871,6 +871,10 @@
 			if ( editor.blockless )
 				return;
 
+			editor.addFeature({
+				allowedContent: 'input[data-cke-chkli]'
+			});
+
 			// Register commands.
 			editor.addCommand( 'numberedlist', new listCommand( 'numberedlist', 'ol' ) );
 			editor.addCommand( 'bulletedlist', new listCommand( 'bulletedlist', 'ul' ) );
