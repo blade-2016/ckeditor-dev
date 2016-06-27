@@ -872,7 +872,7 @@
 				return;
 
 			editor.addFeature({
-				allowedContent: 'input[data-cke-chkli]'
+				allowedContent: 'input[data-cke-chkli,type]'
 			});
 
 			// Register commands.

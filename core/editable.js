@@ -1097,7 +1097,7 @@
 				if ( CKEDITOR.env.webkit ) {
 					// Prevent from tick checkbox/radiobox/select
 					this.attachListener( this, 'click', function( ev ) {
-						if ( ev.data.getTarget().is( 'input', 'select' ) )
+						if ( ev.data.getTarget().is( 'select' ) )
 							ev.data.preventDefault();
 					} );
 
