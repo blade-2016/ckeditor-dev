@@ -37,6 +37,30 @@
 		style && el.setAttribute( 'style', style.replace( /([^;])$/, '$1;' ) + ( el.getAttribute( 'style' ) || '' ) );
 	}
 
+	function toggleDel(){
+		var ipt = this,i,s,len;
+		var parent = this.parentNode;
+		var doc = ipt.ownerDocument;
+		if(parent.tagName=="LI"&&parent.parentNode.tagName=="CL"){
+			if(ipt.checked == true && (!ipt.nextElementSibling || ipt.nextElementSibling.tagName=="S")){
+				s = doc.createElement("S");
+				len = parent.childNodes.length
+				for(i=1;i<len;i++){
+					s.appendChild(parent.removeChild(ipt.nextSibling));
+				}
+				parent.appendChild(s);
+			}
+			if(ipt.checked==false && ipt.nextSibling.nodeType==1 && ipt.nextSibling.tagName=="S"){
+				s = parent.removeChild(ipt.nextSibling);
+				while(s.firstChild){
+					parent.appendChild(s.removeChild(s.firstChild));
+				}
+				
+			}
+
+		}
+	}
+
 	CKEDITOR.plugins.list = {
 		/**
 		 * Convert a DOM list tree into a data structure that is easier to
@@ -344,6 +368,7 @@
 					__chk = __doc.createElement('input');
 					__chk.setAttribute("type","checkbox");
 					__chk.setAttribute("data-cke-chkli","1");
+					__chk.addEventListener("change",toggleDel,false);
 					if(__insertAnchor){
 						__li.insertBefore(__chk,__insertAnchor);
 					}else{
@@ -443,10 +468,15 @@
 			contentBlock = listContents.shift();
 			listItem = doc.createElement( 'li' );
 			if(this.name=="checkedlist"){
-				checkbox = doc.createElement('input');
+				checkbox = doc.$.createElement('input');
 				checkbox.setAttribute("type","checkbox");
 				checkbox.setAttribute("data-cke-chkli","1");
-				checkbox.appendTo(listItem);
+				checkbox.addEventListener("change",toggleDel,false);
+				if(listItem.$.firstChild){
+					listItem.$.insertBefore(checkbox,listItem.$.firstChild)
+				}else{
+					listItem.$.appendChild(checkbox)
+				}
 			}
 			
 
@@ -956,6 +986,10 @@
 						}
 					}
 				},false);
+				var cllis = doc.querySelectorAll("input[data-cke-chkli]");
+				for(var i=0;i<cllis.length;i++){
+					cllis[i].addEventListener("change",toggleDel,false);
+				}
 			})
 
 
