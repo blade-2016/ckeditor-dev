@@ -901,6 +901,64 @@
 					toolbar: 'list,21'
 				} );
 			}
+			editor.on( 'instanceReady', function( evt ) {
+				var editor = evt.editor;
+				var doc = editor.document.$;
+				var tmp = 0
+				doc.body.addEventListener("keyup",function(evt){
+					if(evt.keyCode == 13){
+						if(tmp){
+							//debugger;
+						}
+						tmp=1;
+						var sel = doc.getSelection();
+						var caretNode,liNode,clNode,chkNode,range,sel2;
+						if(sel.isCollapsed){
+							caretNode = sel.focusNode;
+							liNode = caretNode;
+
+							while(true){
+								if(liNode.nodeType==1&&(liNode.tagName=="LI"||liNode.tagName=="BODY")){
+
+									if(liNode.tagName=="LI"){
+										break;
+									}else if(liNode.tagName=="BODY"){
+										liNode = null;
+										break;
+									}
+								}
+								liNode = liNode.parentNode;
+							}
+							if(liNode){
+								if(liNode.parentNode.tagName=="CL"){
+									if(liNode.firstChild && liNode.firstChild.nodeType==1 && liNode.firstChild.tagName=="INPUT" && liNode.firstChild.getAttribute("data-cke-chkli")=="1"){
+
+									}else{
+										chkNode = doc.createElement('input');
+										chkNode.setAttribute("type","checkbox");
+										chkNode.setAttribute("data-cke-chkli","1");
+										if(liNode.firstChild){
+											liNode.insertBefore(chkNode,liNode.firstChild);
+										}else{
+											liNode.appendChild(chkNode);
+										}
+										range = doc.createRange();
+										range.setStartAfter(chkNode);
+										range.collapse(true);
+										sel2 = doc.getSelection();
+										sel2.removeAllRanges();
+										sel2.addRange(range);
+										console.log(doc.getSelection());
+									}
+								}
+
+							}
+						}
+					}
+				},false);
+			})
+
+
 
 			// Handled backspace/del key to join list items. (#8248,#9080)
 			editor.on( 'key', function( evt ) {
