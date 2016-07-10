@@ -277,6 +277,7 @@ CKEDITOR.plugins.add( 'coedit', {
 				var aRootNodeTmp;
 				//没有选择区域，只是光标位置
 				if((evt.keyCode == 8 || evt.keyCode == 46)){
+
 					if(evt.keyCode == 8){
 						aRootNodeTmp = aRootNode.previousSibling;
 					}else{
@@ -286,9 +287,12 @@ CKEDITOR.plugins.add( 'coedit', {
 						if(evt.keyCode == 8 && sel.anchorOffset == 0){
 							evt.preventDefault();
 							console.log("ce: can not delete locked node");
-						}else if(evt.keyCode == 46 && true){
+						}else if(evt.keyCode == 46){
 							if(!sel.anchorNode.nextSibling && sel.anchorNode.length == sel.anchorOffset){
 								evt.preventDefault();	
+								console.log("ce: can not delete locked node");
+							}else if(sel.anchorNode.nextSibling && sel.anchorNode.nextSibling.nodeType==1 && sel.anchorNode.nextSibling.getAttribute("ce-locked")=="true"){
+								evt.preventDefault();
 								console.log("ce: can not delete locked node");
 							}
 						}
